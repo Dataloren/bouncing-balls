@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+	<link rel="stylesheet" href="bouncing.css">
+	<script type="text/javascript" href="jquery-3.3.1.min.js"></script>
+  <title>Bouncing ball</title>
+</head>
+<body>
+  
+  <div id="space">
+     <img src="https://raw.githubusercontent.com/Dataloren/test-repository/master/ball2.png" id="ball" class="planet" />
+  </div>
+	
+	<script>
+	window.onload = function() {
+
+
+  var width = window.innerWidth;
+  var height = window.innerHeight;
+  var deg = 5;
+  var countBalls = 10;
+  var radius = 69;
+  var rotDifference = 3;
+  var x = [];
+  var y = [];
+  var i;
+  var balls =[];
+  var velX = [];
+  var velY = [];
+  var requestId;
+
+
+  function rand(min, max) {
+    return (Math.random() * (max-min+1)) + min;
+  }
+
+  function randomColor() {
+     var h = rand(1, 360);
+     return h;
+  }
+
+  function randomSat() {
+     var s = rand(30, 100);
+     return s;
+  }
+
+  function randomLight() {
+     var l = rand(30, 70);
+     return l;
+  }
+
+  (function() {
+    for(i = 0; i < countBalls; i++) {
+        var ball = document.createElement('img');
+        ball.src = "https://raw.githubusercontent.com/Dataloren/test-repository/master/ball2.png";
+        document.getElementById('space').appendChild(ball);
+        ball.style.position= "absolute";
+        balls[i] = ball;
+
+        var stepX = rand(2, 5);
+        var stepY = rand(-5, 8);
+        velX[i] = stepX;
+        velY[i] = stepY;
+
+        var X = rand(0, width-radius*2);
+        var Y = rand(0, height-radius*2);
+        x[i] = X;
+        y[i] = Y;
+
+    }
+  }());
+
+
+  function bounce() {
+    var change = "hue-rotate("+randomColor()+"deg)"  + "saturate("+randomSat()+"%)" + "brightness("+randomLight()+"%)";
+
+    for(i = 0; i < countBalls; i++) {
+
+        var ball = balls[i];
+
+      if(y[i] + velY[i] > height-radius*2 || y[i] + velY[i] < 0) {
+        velY[i] = -velY[i];
+        ball.style.filter = change;
+      }
+
+      if(x[i] + velX[i] > width-radius*2 || x[i] + velX[i]< 0) {
+        velX[i] = -velX[i];
+        ball.style.filter = change;
+      }
+
+        x[i] += velX[i];
+        y[i] += velY[i];
+
+        ball.style.top = y[i] + 'px';
+        ball.style.left = x[i] + 'px';
+        ball.style.transform ="rotate("+deg+"deg)";
+    }
+     requestId = window.requestAnimationFrame(bounce);
+     deg = deg + rotDifference;
+  }
+
+  function onButtonClick(event) {
+    event.stopImmediatePropagation();
+    bounce();
+  }
+
+  document.getElementById('space').addEventListener('click', onButtonClick);
+
+  function stopAnimate() {
+    window.cancelAnimationFrame(requestId);
+  }
+
+  document.getElementById('space').onmouseleave = stopAnimate;
+
+};
+
+	</script>
+
+</body>
+</html>
